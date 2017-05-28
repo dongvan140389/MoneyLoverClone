@@ -1,10 +1,12 @@
 package com.example.dongvan.moneyloverclone.model;
 
+import java.io.Serializable;
+
 /**
  * Created by VoNga on 18-May-17.
  */
 
-public class TransactionModel {
+public class TransactionModel implements Serializable{
     private int tranID;
     private String tranDate;
     private int tranType;
@@ -16,7 +18,17 @@ public class TransactionModel {
     public TransactionModel() {
     }
 
-    public TransactionModel(String tranDate, int tranType, String tranName, int accountID, String uemail,double tranAmount) {
+    public TransactionModel(int tranID, String tranDate, int tranType, String tranName, int accountID, String uemail, double tranAmount) {
+        this.tranID = tranID;
+        this.tranDate = tranDate;
+        this.tranType = tranType;
+        this.tranName = tranName;
+        this.accountID = accountID;
+        this.uemail = uemail;
+        this.tranAmount = tranAmount;
+    }
+
+    public TransactionModel(String tranDate, int tranType, String tranName, int accountID, String uemail, double tranAmount) {
         this.tranDate = tranDate;
         this.tranType = tranType;
         this.tranName = tranName;

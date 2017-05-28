@@ -1,10 +1,11 @@
 package com.example.dongvan.moneyloverclone;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,7 +15,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.dongvan.moneyloverclone.fragment.FragmentMain;
 import com.example.dongvan.moneyloverclone.model.TransactionModel;
 
 import java.text.SimpleDateFormat;
@@ -33,33 +33,31 @@ import static com.example.dongvan.moneyloverclone.DangKy_DangNhapActivity.TABLE_
 import static com.example.dongvan.moneyloverclone.DangKy_DangNhapActivity.U_EMAIL;
 import static com.example.dongvan.moneyloverclone.MainActivity.ACCOUNT_ID;
 
-public class ThemTransActivity extends Dialog {
+public class ThemTransActivity extends AppCompatActivity {
 
     EditText txtAmountDialog,txtTranNameDialog;
     TextView txtDateTranDialog;
     AppCompatSpinner spinTranType;
     Button btnThemDialog,btnThoatDialog;
-    Activity activity;
 
     Calendar calendar = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     int spinSelect;
 
-    public ThemTransActivity(Activity activity) {
-        super(activity);
-        this.activity = activity;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_them_trans);
-        setTitle("Thêm chi tiêu");
         addControls();
-        addEvents();
         addItemsOnSpinner();
+        addEvents();
     }
 
     private void addEvents() {
         btnThoatDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ThemTransActivity.this.dismiss();
+                onBackPressed();
             }
         });
         spinTranType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -85,11 +83,10 @@ public class ThemTransActivity extends Dialog {
                             ACCOUNT_ID,
                             U_EMAIL,
                             Double.parseDouble(txtAmountDialog.getText().toString()));
-                    //Log.d("themTran"," => "+tran.toString());
                     addTran(tran);
-                    //FragmentMain.adapterListTran.notifyDataSetChanged();
-                    ThemTransActivity.this.dismiss();
-
+                    Intent intent = new Intent(ThemTransActivity.this,MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             }
         });
@@ -107,7 +104,7 @@ public class ThemTransActivity extends Dialog {
         list.add("Vui lòng chọn loại chi tiêu...");
         list.add("Dùng cho chi tiêu");
         list.add("Tiền thu nhập");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, list);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(ThemTransActivity.this,android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinTranType.setAdapter(dataAdapter);
 
@@ -121,7 +118,7 @@ public class ThemTransActivity extends Dialog {
                 txtDateTranDialog.setText(sdf.format(calendar.getTime()));
             }
         };
-        DatePickerDialog dialog = new DatePickerDialog(getContext(),
+        DatePickerDialog dialog = new DatePickerDialog(ThemTransActivity.this,
                 callBack,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -148,7 +145,7 @@ public class ThemTransActivity extends Dialog {
     }
 
     public void addTran(TransactionModel tran) {
-        database = getContext().openOrCreateDatabase(AfterSplashActivity.DATABASE_NAME,android.content.Context.MODE_PRIVATE,null);
+        database = openOrCreateDatabase(AfterSplashActivity.DATABASE_NAME,android.content.Context.MODE_PRIVATE,null);
 
         ContentValues values = new ContentValues();
         values.put(KEY_TRANDATE, tran.getTranDate());
@@ -162,10 +159,4 @@ public class ThemTransActivity extends Dialog {
         database.close();
     }
 
-    @Override
-    public void setOnDismissListener(@Nullable OnDismissListener listener) {
-        super.setOnDismissListener(listener);
-        FragmentMain frag = new FragmentMain();
-        frag.adapterListTran.notifyDataSetChanged();
-    }
 }

@@ -102,7 +102,7 @@ android:layout_height="match_parent">
             android:layout_marginEnd="8dp" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/txtTienRa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1,000,000 đ"
@@ -118,13 +118,13 @@ android:layout_height="match_parent">
             android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7"
+            app:layout_constraintTop_toBottomOf="@+id/txtTienRa"
             android:id="@+id/view2"
             android:background="@color/colorGray"
             android:layout_marginEnd="8dp" />
 
         <TextView
-            android:id="@+id/txtTienRa"
+            android:id="@+id/txtTongTien"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
@@ -140,7 +140,7 @@ android:layout_height="match_parent">
             android:layout_height="wrap_content"
             android:text="Chi tiết chi tiêu trong tháng"
             android:layout_marginTop="2dp"
-            app:layout_constraintTop_toBottomOf="@+id/txtTienRa"
+            app:layout_constraintTop_toBottomOf="@+id/txtTongTien"
             android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/textView9"

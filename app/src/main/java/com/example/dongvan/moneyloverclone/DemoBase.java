@@ -16,10 +16,7 @@ public abstract class DemoBase extends AppCompatActivity {
     };
 
     protected String[] mParties = new String[]{
-            "25%", "25%", "25%", "25%", "25%", "Tập gym", "Party G", "Party H",
-            "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
-            "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
-            "Party Y", "Party Z"
+            "Tiền vào", "Tiền ra"
     };
 
     protected Typeface mTfRegular;

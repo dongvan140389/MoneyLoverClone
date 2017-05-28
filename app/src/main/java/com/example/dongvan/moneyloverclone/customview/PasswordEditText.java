@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 
 import com.example.dongvan.moneyloverclone.R;
@@ -67,27 +65,27 @@ public class PasswordEditText extends EditText {
         eye = ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility_black_24dp).mutate();
         eyeStrike = ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility_off_black_24dp).mutate();
 
-        if(this.useValidate){
-            setOnFocusChangeListener(new OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    if(!b) {
-                        String chuoi = getText().toString();
-                        TextInputLayout textInputLayout = (TextInputLayout) view.getParentForAccessibility();
-                        matcher = pattern.matcher(chuoi);
-                        if(!matcher.matches()){
-                            textInputLayout.setErrorEnabled(true);
-                            textInputLayout.setError("Mật khẩu phải bao gồm 6 ký tự và một chữ hoa");
-                        }else{
-                            textInputLayout.setErrorEnabled(false);
-                            textInputLayout.setError("");
-                        }
-
-
-                    }
-                }
-            });
-        }
+//        if(this.useValidate){
+//            setOnFocusChangeListener(new OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View view, boolean b) {
+//                    if(!b) {
+//                        String chuoi = getText().toString().trim();
+//                        TextInputLayout textInputLayout = (TextInputLayout) view.getParentForAccessibility();
+//                        matcher = pattern.matcher(chuoi);
+//                        if(chuoi==""||chuoi==null){
+//                            textInputLayout.setErrorEnabled(true);
+//                            textInputLayout.setError("Mật khẩu phải bao gồm 6 ký tự và một chữ hoa");
+//                        }else{
+//                            textInputLayout.setErrorEnabled(false);
+//                            textInputLayout.setError("");
+//                        }
+//
+//
+//                    }
+//                }
+//            });
+//        }
         caidat();
     }
 

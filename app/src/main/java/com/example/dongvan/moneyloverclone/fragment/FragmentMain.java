@@ -1,33 +1,35 @@
 package com.example.dongvan.moneyloverclone.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.dongvan.moneyloverclone.AfterSplashActivity;
 import com.example.dongvan.moneyloverclone.R;
 import com.example.dongvan.moneyloverclone.ThemTransActivity;
 import com.example.dongvan.moneyloverclone.TongQuanActivity;
+import com.example.dongvan.moneyloverclone.UpdateTransActivity;
 import com.example.dongvan.moneyloverclone.adapter.AdapterListTran;
 import com.example.dongvan.moneyloverclone.model.TransactionModel;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.dongvan.moneyloverclone.AfterSplashActivity.database;
+import static com.example.dongvan.moneyloverclone.DangKy_DangNhapActivity.U_EMAIL;
+import static com.example.dongvan.moneyloverclone.MainActivity.ACCOUNT_ID;
 
 /**
  * Created by VoNga on 16-May-17.
@@ -36,22 +38,30 @@ import static com.example.dongvan.moneyloverclone.AfterSplashActivity.database;
 public class FragmentMain  extends Fragment {
 
     ImageView btnTongQuan;
-    TextView txtTienVao,txtTienRa;
+    TextView txtTienVao,txtTienRa,txtTongTien;
     ExpandableListView elvTrans;
-    public static AdapterListTran adapterListTran;
+    AdapterListTran adapterListTran;
+    List<TransactionModel> listTranByDate;
+    List<TransactionModel> listAllTran;
+    List<TransactionModel> listTran;
     HashMap<String, List<TransactionModel>> mData;
     FloatingActionButton floatButton;
 
     List<String> listHeader;
+    double tienvaoIntent= 0;
+    double tienraIntent = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_fragmentmain,container,false);
         addControls(view);
+        showData();
         btnTongQuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),TongQuanActivity.class);
+                intent.putExtra("TIENRA",tienraIntent);
+                intent.putExtra("TIENVAO",tienvaoIntent);
                 startActivity(intent);
             }
         });
@@ -59,11 +69,23 @@ public class FragmentMain  extends Fragment {
         floatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ThemTransActivity myDialog = new ThemTransActivity(getActivity());
-                myDialog.show();
+                Intent intent = new Intent(getActivity(), ThemTransActivity.class);
+                startActivity(intent);
             }
         });
-        showData();
+        elvTrans.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+
+                Intent intent = new Intent(getActivity(),UpdateTransActivity.class);
+                Bundle bundle = new Bundle();
+                TransactionModel tran = (TransactionModel) parent.getExpandableListAdapter().getChild(groupPosition,childPosition);
+                bundle.putSerializable("TRAN",tran);
+                intent.putExtra("I_TRAN",bundle);
+                startActivity(intent);
+                return false;
+            }
+        });
         return view;
     }
 
@@ -71,29 +93,56 @@ public class FragmentMain  extends Fragment {
         btnTongQuan= (ImageView) view.findViewById(R.id.btnTongQuan);
         txtTienRa = (TextView) view.findViewById(R.id.txtTienRa);
         txtTienVao= (TextView) view.findViewById(R.id.txtTienVao);
+        txtTongTien = (TextView) view.findViewById(R.id.txtTongTien);
         elvTrans = (ExpandableListView) view.findViewById(R.id.elvTrans);
         floatButton= (FloatingActionButton) view.findViewById(R.id.floatButton);
     }
 
     public void showData(){
-        loadTranDate();
+        loadTranDate(U_EMAIL,ACCOUNT_ID);
         //data for child
         mData = new HashMap<>();
 
         for(int i=0;i<listHeader.size();i++){
-            List<TransactionModel> listTran = loadTranDetail(listHeader.get(i));
-            Log.d("setCursor"," => số lượng tran trong for "+listTran.size());
+            listTran = loadTranDetail(listHeader.get(i),U_EMAIL,ACCOUNT_ID);
             mData.put(listHeader.get(i), listTran);
         }
 
         adapterListTran = new AdapterListTran(getContext(), listHeader, mData);
         elvTrans.setAdapter(adapterListTran);
+        adapterListTran.notifyDataSetChanged();
+
+        showAmount();
     }
 
-    public List<String> loadTranDate(){
+    private void showAmount() {
+        double tienvao = 0;
+        double tienra = 0;
+        double tongtien = 0;
+
+        Locale locale = new Locale("vi", "VN");
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+        loadAllTran(U_EMAIL,ACCOUNT_ID);
+
+        for(TransactionModel tran : listAllTran){
+            if(tran.getTranType()==1) {
+                tienra += tran.getTranAmount();
+            }else{
+                tienvao += tran.getTranAmount();
+            }
+        }
+        tongtien = tienvao - tienra;
+        txtTienVao.setText(currencyFormatter.format(tienvao));
+        txtTienRa.setText(currencyFormatter.format(tienra));
+        txtTongTien.setText(currencyFormatter.format(tongtien));
+        tienraIntent = tienra;
+        tienvaoIntent = tienvao;
+    }
+
+    public List<String> loadTranDate(String uemail, int accoundID){
         listHeader = new ArrayList<>();
         database = getActivity().openOrCreateDatabase(AfterSplashActivity.DATABASE_NAME,android.content.Context.MODE_PRIVATE,null);
-        Cursor cursor = database.rawQuery("SELECT * FROM tbTransaction GROUP BY transdate",null);
+        Cursor cursor = database.rawQuery("SELECT * FROM tbTransaction WHERE uemail = "+"'"+uemail+"'"+ " AND accountid = "+accoundID+" GROUP BY transdate",null);
         cursor.moveToFirst();
 
         while(!cursor.isAfterLast()) {
@@ -103,11 +152,10 @@ public class FragmentMain  extends Fragment {
         return listHeader;
     }
 
-    public List<TransactionModel> loadTranDetail(String tranDate){
-        List<TransactionModel> listTran = new ArrayList<>();
+    public List<TransactionModel> loadTranDetail(String tranDate,String uemail, int accoundID){
+        listTranByDate = new ArrayList<>();
         database = getActivity().openOrCreateDatabase(AfterSplashActivity.DATABASE_NAME,android.content.Context.MODE_PRIVATE,null);
-        Cursor cursor = database.rawQuery("SELECT * FROM tbTransaction WHERE transdate = '"+tranDate+"'",null);
-        Log.d("setCursor"," => số lượng tran chi tiết "+cursor.getCount());
+        Cursor cursor = database.rawQuery("SELECT * FROM tbTransaction WHERE transdate = '"+tranDate+"' AND uemail = "+"'"+uemail+"'"+ " AND accountid = "+accoundID,null);
         cursor.moveToFirst();
 
         while(!cursor.isAfterLast()) {
@@ -119,35 +167,39 @@ public class FragmentMain  extends Fragment {
             tran.setAccountID(cursor.getInt(4));
             tran.setUemail(cursor.getString(5));
             tran.setTranAmount(cursor.getDouble(6));
-            listTran.add(tran);
+            listTranByDate.add(tran);
             cursor.moveToNext();
         }
-        return listTran;
+        return listTranByDate;
     }
+
+    public List<TransactionModel> loadAllTran(String uemail, int accoundID){
+        listAllTran = new ArrayList<>();
+        database = getActivity().openOrCreateDatabase(AfterSplashActivity.DATABASE_NAME,android.content.Context.MODE_PRIVATE,null);
+        Cursor cursor = database.rawQuery("SELECT * FROM tbTransaction WHERE uemail = "+"'"+uemail+"'"+ " AND accountid = "+accoundID,null);
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()) {
+            TransactionModel tran = new TransactionModel();
+            tran.setTranID(cursor.getInt(0));
+            tran.setTranDate(cursor.getString(1));
+            tran.setTranType(cursor.getInt(2));
+            tran.setTranName(cursor.getString(3));
+            tran.setAccountID(cursor.getInt(4));
+            tran.setUemail(cursor.getString(5));
+            tran.setTranAmount(cursor.getDouble(6));
+            listAllTran.add(tran);
+            cursor.moveToNext();
+        }
+        return listAllTran;
+    }
+
+
 
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(getContext(), "Trạng thái Pause", Toast.LENGTH_SHORT).show();
+        //adapterListTran.notifyDataSetChanged();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Toast.makeText(getContext(), "Trạng thái Pause", Toast.LENGTH_SHORT).show();
-        //showData();
-        adapterListTran.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Toast.makeText(getContext(), "Trạng thái Detach", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Toast.makeText(getContext(), "Trạng thái Attach", Toast.LENGTH_SHORT).show();
-    }
 }

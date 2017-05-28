@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.example.dongvan.moneyloverclone.R;
 import com.example.dongvan.moneyloverclone.model.TransactionModel;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by VoNga on 21-May-17.
@@ -83,15 +85,18 @@ public class AdapterListTran extends BaseExpandableListAdapter {
             convertView = li.inflate(R.layout.item_child,null);
         }
 
+        Locale locale = new Locale("vi", "VN");
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+
         TextView txtNameTran = (TextView) convertView.findViewById(R.id.txtNameTran);
         TextView txtAmountTran = (TextView) convertView.findViewById(R.id.txtAmountTran);
         txtNameTran.setText(((TransactionModel) getChild(groupPosition, childPosition)).getTranName());
-        txtAmountTran.setText(String.valueOf(((TransactionModel) getChild(groupPosition, childPosition)).getTranAmount()));
+        txtAmountTran.setText(currencyFormatter.format(((TransactionModel) getChild(groupPosition, childPosition)).getTranAmount()));
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 }

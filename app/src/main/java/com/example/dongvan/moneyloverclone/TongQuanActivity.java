@@ -1,5 +1,6 @@
 package com.example.dongvan.moneyloverclone;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -9,9 +10,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,21 +25,19 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
-public class TongQuanActivity extends DemoBase implements SeekBar.OnSeekBarChangeListener,
-        OnChartValueSelectedListener {
+public class TongQuanActivity extends DemoBase implements OnChartValueSelectedListener {
 
     private Toolbar toolbar;
     private PieChart mChart;
-    private SeekBar mSeekBarX, mSeekBarY;
-    private TextView tvX, tvY;
 
     private Typeface tf;
+    double tienvao = 0;
+    double tienra = 0;
+    double tongtien = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_tong_quan);
 
         //handle toolbar
@@ -55,16 +51,10 @@ public class TongQuanActivity extends DemoBase implements SeekBar.OnSeekBarChang
             }
         });
 
-        tvX = (TextView) findViewById(R.id.tvXMax);
-        tvY = (TextView) findViewById(R.id.tvYMax);
-
-        mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
-        mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);
-
-        mSeekBarY.setProgress(10);
-
-        mSeekBarX.setOnSeekBarChangeListener(this);
-        mSeekBarY.setOnSeekBarChangeListener(this);
+        Intent myIntent = getIntent();
+        tienra = myIntent.getDoubleExtra("TIENRA",0);
+        tienvao = myIntent.getDoubleExtra("TIENVAO",0);
+        tongtien = tienra+tienvao;
 
         mChart = (PieChart) findViewById(R.id.chart1);
         mChart.setUsePercentValues(true);
@@ -102,7 +92,7 @@ public class TongQuanActivity extends DemoBase implements SeekBar.OnSeekBarChang
         // add a selection listener
         mChart.setOnChartValueSelectedListener(this);
 
-        setData(4, 100);
+        setData(2, (float)tongtien);
 
         mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         // mChart.spin(2000, 0, 360);
@@ -115,51 +105,21 @@ public class TongQuanActivity extends DemoBase implements SeekBar.OnSeekBarChang
         l.setEnabled(false);
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-        tvX.setText("" + (mSeekBarX.getProgress()));
-        tvY.setText("" + (mSeekBarY.getProgress()));
-
-        setData(mSeekBarX.getProgress(), mSeekBarY.getProgress());
-    }
-
-    private void setData(int count, float range) {
-
-        float mult = range;
-
+    private void setData(int count,  float range) {
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
-        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
-        // the chart.
-        for (int i = 0; i < count; i++) {
-            entries.add(new PieEntry((float) (Math.random() * mult) + mult / 5, mParties[i % mParties.length]));
-        }
+        //tạo 2 entries tiền vào và tiền ra => % tiền chi tiêu
+        entries.add(new PieEntry((float)tienvao/range, mParties[0]));
+        entries.add(new PieEntry((float)tienra/range, mParties[1]));
 
         PieDataSet dataSet = new PieDataSet(entries, "Election Results");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
         // add a lot of colors
-
         ArrayList<Integer> colors = new ArrayList<Integer>();
-
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
         for (int c : ColorTemplate.COLORFUL_COLORS)
             colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        colors.add(ColorTemplate.getHoloBlue());
 
         dataSet.setColors(colors);
         dataSet.setValueLinePart1OffsetPercentage(80.f);
@@ -172,11 +132,9 @@ public class TongQuanActivity extends DemoBase implements SeekBar.OnSeekBarChang
         data.setValueTextSize(11f);
         data.setValueTextColor(Color.BLACK);
         data.setValueTypeface(tf);
+
         mChart.setData(data);
-
-        // undo all highlights
         mChart.highlightValues(null);
-
         mChart.invalidate();
     }
 
@@ -199,18 +157,6 @@ public class TongQuanActivity extends DemoBase implements SeekBar.OnSeekBarChang
 
     @Override
     public void onNothingSelected() {
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        // TODO Auto-generated method stub
 
     }
 }

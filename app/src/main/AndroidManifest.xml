@@ -20,7 +20,8 @@
         <activity android:name=".AfterSplashActivity" />
         <activity android:name=".DangKy_DangNhapActivity" />
         <activity android:name=".TongQuanActivity" />
-        <activity android:name=".ThemTransActivity"></activity>
+        <activity android:name=".ThemTransActivity" />
+        <activity android:name=".UpdateTransActivity"></activity>
     </application>
 
 </manifest>

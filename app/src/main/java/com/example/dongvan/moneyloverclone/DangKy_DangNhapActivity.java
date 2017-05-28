@@ -11,6 +11,7 @@ import com.example.dongvan.moneyloverclone.adapter.AdapterViewPagerDangNhap;
 
 public class DangKy_DangNhapActivity extends AppCompatActivity {
 
+    public static String KEY_ID = "transid";
     public static String KEY_TRANDATE = "transdate";
     public static String KEY_TRANTYPE = "transtype";
     public static String KEY_TRANNAME = "transname";
@@ -21,7 +22,7 @@ public class DangKy_DangNhapActivity extends AppCompatActivity {
     public static String U_EMAIL;
 
     TabLayout tabLayout;
-    ViewPager viewPager;
+    public static ViewPager viewPager;
     Toolbar toolbar;
 
     @Override

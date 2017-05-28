@@ -1,89 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp">
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cần điền tất cả các mục"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_edDiaChiEmailDK"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/lnLayoutDK"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <EditText
-            android:id="@+id/edDiaChiEmailDK"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Cần điền tất cả các mục"
+            android:textStyle="bold" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_edDiaChiEmailDK"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint=" Địa chỉ email"
-            android:textColor="@color/colorBlack"
-            />
+            android:layout_margin="10dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/edDiaChiEmailDK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=" Địa chỉ email"
+                android:textColor="@color/colorBlack" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_edMatKhauDK"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        >
+        </android.support.design.widget.TextInputLayout>
 
-        <com.example.dongvan.moneyloverclone.customview.PasswordEditText
-            android:id="@+id/edMatKhauDK"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_edMatKhauDK"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mật khẩu"
-            app:useStrike="true"
-            app:useValidate="true"
-            android:textColor="@color/colorBlack"
-            />
+            android:layout_margin="10dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <com.example.dongvan.moneyloverclone.customview.PasswordEditText
+                android:id="@+id/edMatKhauDK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mật khẩu"
+                android:textColor="@color/colorBlack"
+                app:useStrike="true"
+                />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Mật khẩu phải bao gồm 6 ký tự và một chữ hoa" />
+        </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_edNhapLaiMatKhauDK"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        >
-
-        <com.example.dongvan.moneyloverclone.customview.PasswordEditText
-            android:id="@+id/edNhapLaiMatKhauDK"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_edNhapLaiMatKhauDK"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập lại mật khẩu"
-            app:useStrike="true"
-            android:textColor="@color/colorBlack"
-            />
+            android:layout_margin="10dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <com.example.dongvan.moneyloverclone.customview.PasswordEditText
+                android:id="@+id/edNhapLaiMatKhauDK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập lại mật khẩu"
+                android:textColor="@color/colorBlack"
+                app:useStrike="true" />
 
-    <Button
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/btnDangKy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Đăng Ký"
-        android:textColor="@color/colorWhite"
-        android:background="@drawable/btn_green"
-        />
-</LinearLayout>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnDangKy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_green"
+            android:text="Đăng Ký"
+            android:textColor="@color/colorWhite" />
+    </LinearLayout>
+</ScrollView>
